@@ -1,0 +1,260 @@
+/* Custom styles for Fake News Detector */
+
+:root {
+    --background: 210 11% 98%; /* #F5F7FA */
+    --foreground: 222 15% 6%; /* #0F1419 */
+    --primary: 221 83% 53%; /* #3B82F6 */
+    --success: 142 71% 45%; /* #22C55E */
+    --danger: 0 84% 60%; /* #EF4444 */
+    --warning: 43 96% 56%; /* #F59E0B */
+    --info: 199 89% 48%; /* #0EA5E9 */
+    --secondary: 210 40% 98%; /* #F8FAFC */
+    --muted: 215 28% 17%; /* #1E293B */
+}
+
+/* Global styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Navigation customizations */
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Credibility gauge container */
+.credibility-gauge {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
+.credibility-gauge canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Progress bars with custom styling */
+.progress {
+    background-color: rgba(55, 65, 81, 0.3);
+    border-radius: 10px;
+}
+
+.progress-bar {
+    border-radius: 10px;
+    transition: width 0.6s ease;
+}
+
+/* Metric items */
+.metric-item {
+    padding: 0.75rem 0;
+}
+
+.metric-item:not(:last-child) {
+    border-bottom: 1px solid rgba(55, 65, 81, 0.3);
+}
+
+/* Content preview styling */
+.content-preview {
+    max-height: 300px;
+    overflow-y: auto;
+    border-left: 4px solid var(--bs-primary);
+    font-family: 'Georgia', serif;
+    line-height: 1.8;
+}
+
+.content-preview::-webkit-scrollbar {
+    width: 6px;
+}
+
+.content-preview::-webkit-scrollbar-track {
+    background: rgba(55, 65, 81, 0.1);
+    border-radius: 3px;
+}
+
+.content-preview::-webkit-scrollbar-thumb {
+    background: rgba(55, 65, 81, 0.5);
+    border-radius: 3px;
+}
+
+.content-preview::-webkit-scrollbar-thumb:hover {
+    background: rgba(55, 65, 81, 0.7);
+}
+
+/* Keywords container */
+.keywords-container {
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+/* Loading spinner enhancements */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Alert customizations */
+.alert {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Button enhancements */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* Form enhancements */
+.form-control {
+    border-radius: 8px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+/* Tab customizations */
+.nav-tabs {
+    border-bottom: 2px solid rgba(55, 65, 81, 0.3);
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    border-radius: 8px 8px 0 0;
+    margin-right: 0.5rem;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+/* Badge customizations */
+.badge {
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* Pagination customizations */
+.page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    font-weight: 500;
+}
+
+/* Responsive design enhancements */
+@media (max-width: 768px) {
+    .credibility-gauge {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Animation for fade-in effects */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Utility classes */
+.text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.box-shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(55, 65, 81, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(55, 65, 81, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(55, 65, 81, 0.7);
+}
+
+/* Print styles */
+@media print {
+    .btn, .navbar, .pagination {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #000 !important;
+        box-shadow: none !important;
+    }
+    
+    body {
+        color: #000 !important;
+        background: #fff !important;
+    }
+}

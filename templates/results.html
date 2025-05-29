@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Results - Fake News Detector{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Results Header -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="text-light">
+                    <i class="fas fa-chart-bar text-primary me-2"></i>
+                    Analysis Results
+                </h1>
+                <div class="btn-group">
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>New Analysis
+                    </a>
+                    <a href="{{ url_for('export_analysis', analysis_id=analysis.id) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-download me-1"></i>Export
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Credibility Score Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="card bg-dark border-secondary">
+                <div class="card-body text-center py-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="credibility-gauge mb-3 mb-md-0">
+                                <canvas id="credibilityChart" width="200" height="200"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h2 class="text-{{ 'success' if analysis.credibility_score > 0.5 else 'danger' }} mb-3">
+                                {% if analysis.credibility_score > 0.7 %}
+                                    <i class="fas fa-check-circle me-2"></i>Likely Credible
+                                {% elif analysis.credibility_score > 0.5 %}
+                                    <i class="fas fa-question-circle me-2"></i>Moderately Credible
+                                {% elif analysis.credibility_score > 0.3 %}
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Questionable
+                                {% else %}
+                                    <i class="fas fa-times-circle me-2"></i>Likely Fake
+                                {% endif %}
+                            </h2>
+                            <p class="lead text-light mb-3">
+                                Credibility Score: <strong>{{ (analysis.credibility_score * 100)|round(1) }}%</strong>
+                            </p>
+                            <p class="text-muted">
+                                Based on multiple AI algorithms analyzing content patterns, source credibility, and linguistic features.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Analysis -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-microscope me-2"></i>Detailed Analysis
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Analysis Metrics -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="text-light mb-3">Analysis Metrics</h5>
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted">Keyword Analysis</span>
+                                    <span class="badge bg-{{ 'success' if analysis.keyword_score > 0.5 else 'danger' }}">
+                                        {{ (analysis.keyword_score * 100)|round(1) if analysis.keyword_score else 'N/A' }}%
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-{{ 'success' if analysis.keyword_score > 0.5 else 'danger' }}" 
+                                         style="width: {{ (analysis.keyword_score * 100)|round(1) if analysis.keyword_score else 0 }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted">Sentiment Analysis</span>
+                                    <span class="badge bg-{{ 'success' if analysis.sentiment_score > 0.5 else 'danger' }}">
+                                        {{ (analysis.sentiment_score * 100)|round(1) if analysis.sentiment_score else 'N/A' }}%
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-{{ 'success' if analysis.sentiment_score > 0.5 else 'danger' }}" 
+                                         style="width: {{ (analysis.sentiment_score * 100)|round(1) if analysis.sentiment_score else 0 }}%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-item mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="text-muted">Source Credibility</span>
+                                    <span class="badge bg-{{ 'success' if analysis.source_score > 0.5 else 'danger' }}">
+                                        {{ (analysis.source_score * 100)|round(1) if analysis.source_score else 'N/A' }}%
+                                    </span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-{{ 'success' if analysis.source_score > 0.5 else 'danger' }}" 
+                                         style="width: {{ (analysis.source_score * 100)|round(1) if analysis.source_score else 0 }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Key Indicators -->
+                        <div class="col-md-6 mb-4">
+                            <h5 class="text-light mb-3">Key Indicators</h5>
+                            {% if analysis_details.get('keyword_indicators') %}
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Found Keywords:</h6>
+                                    <div class="keywords-container">
+                                        {% for indicator in analysis_details.keyword_indicators[:10] %}
+                                            <span class="badge bg-secondary me-1 mb-1">{{ indicator }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            {% if analysis_details.get('sentiment') %}
+                                <div class="mb-3">
+                                    <h6 class="text-muted">Sentiment:</h6>
+                                    <span class="badge bg-info">
+                                        {{ analysis_details.sentiment|title }}
+                                        {% if analysis_details.get('sentiment_confidence') %}
+                                            ({{ (analysis_details.sentiment_confidence * 100)|round(1) }}% confidence)
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <h6 class="text-muted">Content Stats:</h6>
+                                <ul class="list-unstyled text-muted small">
+                                    <li><i class="fas fa-align-left me-1"></i>Length: {{ analysis_details.get('length', 'N/A') }} characters</li>
+                                    <li><i class="fas fa-font me-1"></i>Words: {{ analysis_details.get('word_count', 'N/A') }}</li>
+                                    {% if analysis_details.get('readability') %}
+                                        <li><i class="fas fa-book me-1"></i>Readability Score: {{ (analysis_details.readability.score * 100)|round(1) }}%</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Preview -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10">
+            <div class="card bg-dark border-secondary">
+                <div class="card-header">
+                    <h4 class="card-title mb-0">
+                        <i class="fas fa-file-text me-2"></i>Analyzed Content
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if analysis.url %}
+                        <div class="mb-3">
+                            <strong class="text-muted">Source URL:</strong>
+                            <a href="{{ analysis.url }}" target="_blank" class="text-primary ms-2">
+                                {{ analysis.url }}
+                                <i class="fas fa-external-link-alt ms-1"></i>
+                            </a>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="content-preview bg-secondary bg-opacity-25 p-3 rounded">
+                        <p class="text-light mb-0" style="white-space: pre-wrap;">{{ analysis.content[:1000] }}{% if analysis.content|length > 1000 %}...{% endif %}</p>
+                    </div>
+                    
+                    {% if analysis.content|length > 1000 %}
+                        <div class="text-center mt-3">
+                            <button class="btn btn-outline-secondary btn-sm" onclick="toggleFullContent()">
+                                <i class="fas fa-expand me-1"></i>Show Full Content
+                            </button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis History Link -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10 text-center">
+            <a href="{{ url_for('history') }}" class="btn btn-outline-primary">
+                <i class="fas fa-history me-2"></i>View Analysis History
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden full content -->
+<div id="fullContentModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-light">Full Content</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="content-full bg-secondary bg-opacity-25 p-3 rounded" style="max-height: 70vh; overflow-y: auto;">
+                    <p class="text-light mb-0" style="white-space: pre-wrap;">{{ analysis.content }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create credibility gauge chart
+    const ctx = document.getElementById('credibilityChart').getContext('2d');
+    const credibilityScore = {{ analysis.credibility_score }};
+    
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Credibility', 'Remaining'],
+            datasets: [{
+                data: [credibilityScore * 100, (1 - credibilityScore) * 100],
+                backgroundColor: [
+                    credibilityScore > 0.5 ? '#198754' : '#dc3545',
+                    '#374151'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    enabled: false
+                }
+            }
+        },
+        plugins: [{
+            id: 'centerText',
+            beforeDraw: function(chart) {
+                const width = chart.width;
+                const height = chart.height;
+                const ctx = chart.ctx;
+                
+                ctx.restore();
+                const fontSize = (height / 100).toFixed(2);
+                ctx.font = fontSize + "em 'Helvetica Neue', Helvetica, Arial, sans-serif";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#ffffff";
+                
+                const text = Math.round(credibilityScore * 100) + "%";
+                const textX = Math.round((width - ctx.measureText(text).width) / 2);
+                const textY = height / 2;
+                
+                ctx.fillText(text, textX, textY);
+                ctx.save();
+            }
+        }]
+    });
+});
+
+function toggleFullContent() {
+    const modal = new bootstrap.Modal(document.getElementById('fullContentModal'));
+    modal.show();
+}
+</script>
+{% endblock %}
